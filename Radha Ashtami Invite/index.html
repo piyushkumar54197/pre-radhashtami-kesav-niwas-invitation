@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>You're Invited — Pre-Radhashtami Celebration</title>
+<meta name="description" content="A personal invitation to the Pre-Radhashtami Celebration." />
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div id="app">
+
+  <!-- Blurred full-bleed copy of the poster: fills every edge of the
+       viewport so the sharp poster below never has to crop or letterbox. -->
+  <div class="backdrop-fill" aria-hidden="true">
+    <img src="assets/image/Poster.png" alt="" />
+  </div>
+
+  <!-- The poster itself, always shown in full (aspect-ratio locked). -->
+  <div class="stage-viewport">
+    <div class="poster-frame" id="posterFrame">
+
+      <img class="poster-sharp" src="assets/image/Poster.png"
+           alt="Pre-Radhashtami Celebration invitation poster" />
+
+      <!--
+        The interactive matki is NOT a separate illustration — it is a
+        pixel-identical crop of the matki already painted into the poster
+        (crop box: 255,640 → 715,1180 of the 1024×1536 source), positioned
+        with the same percentages so it always sits exactly on top of the
+        real artwork at any screen size.
+      -->
+      <div class="matki-glow-layer" id="matkiGlowLayer" aria-hidden="true">
+        <img class="glow-photo" src="assets/image/matki-glow.png" alt="" />
+        <img class="divine-spark-img" src="assets/reveal/golden-spark.png" alt="" />
+      </div>
+
+      <button type="button"
+              class="matki-hit"
+              id="matkiHit"
+              aria-label="Tap the matki to open your invitation">
+        <img src="assets/image/matki-sharp.png" alt="" />
+
+        <svg class="crack-overlay" id="crackOverlay" viewBox="0 0 460 540"
+             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <g fill="none" stroke="#241207" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M246 118 L 224 168 L 258 198 L 226 244"/>
+            <path d="M258 198 L 296 214 L 282 256"/>
+            <path d="M224 168 L 186 188 L 196 220"/>
+            <path d="M226 244 L 208 300 L 236 336 L 214 392"/>
+            <path d="M236 336 L 270 350 L 258 388"/>
+            <path d="M208 300 L 172 316 L 178 352"/>
+          </g>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Broken matki — real production asset. Appears immediately after the
+       burst, then settles above the invitation once it shatters. -->
+  <div class="broken-matki" id="brokenMatki" aria-hidden="true">
+    <img src="assets/reveal/broken-matki.png" alt="" />
+  </div>
+
+  <!-- Peacock feather — the reveal wand. Real illustrated feather asset.
+       The quill's very tip (≈50.8%, 99.9% of this image's own box) is the
+       only coordinate ever used for targeting — see TIP_X_PCT/TIP_Y_PCT
+       in script.js. -->
+  <div class="feather" id="feather" aria-hidden="true">
+    <img id="featherImg" src="assets/reveal/peacock-feather.png" alt="" />
+  </div>
+
+  <!-- Ambient floating petals, added dynamically once the reveal begins. -->
+  <div class="petal-field" id="petalField" aria-hidden="true"></div>
+
+  <!-- Invitation — the real makhan-splash production asset is the card;
+       dynamic content sits inside its pre-measured blank zone (the
+       .card-content padding in style.css was measured directly off
+       this PNG's blank interior — see the pixel analysis notes there). -->
+  <div class="reveal-card" id="revealCard" aria-live="polite">
+
+    <div class="makhan-card" id="makhanCard">
+      <img class="makhan-card-art" src="assets/reveal/makhan-splash.png" alt="" aria-hidden="true" />
+      <div class="card-content">
+
+        <div class="emblem">
+          <svg viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <g fill="none" stroke="#c9a24a" stroke-width="1.6">
+              <path d="M20 30 C 12 30, 8 24, 9 18 C 13 20, 16 24, 20 24 C 24 24, 27 20, 31 18 C 32 24, 28 30, 20 30 Z"/>
+              <path d="M20 24 C 20 16, 16 11, 20 5 C 24 11, 20 16, 20 24 Z"/>
+              <path d="M20 22 C 14 18, 11 12, 14 6 C 18 10, 19 16, 20 22 Z"/>
+              <path d="M20 22 C 26 18, 29 12, 26 6 C 22 10, 21 16, 20 22 Z"/>
+            </g>
+          </svg>
+          <span>Hare Krishna</span>
+        </div>
+
+        <div class="devotee-photo-arch reveal-item" id="photoItem">
+          <img id="devoteePhoto" src="" alt="" />
+        </div>
+
+        <h2 class="devotee-name reveal-item" id="nameItem"></h2>
+
+        <p class="devotee-message reveal-item" id="messageItem">
+          Your association always brings enthusiasm to devotional gatherings.<br />
+          We would be delighted to have you at our Pre-Radhashtami Celebration.
+        </p>
+
+        <div class="reveal-item" id="finalItem">
+          <p class="final-text">Please Join Us</p>
+          <div class="final-icon" aria-hidden="true">❦</div>
+        </div>
+
+        <!-- Invisible anchor marking where the feather comes to rest
+             (tucked beside the photo, over the milk border, like the
+             reference layout). -->
+        <span class="visually-hidden" id="featherDock" style="position:absolute; right:-2%; top:29%; width:1px; height:1px;"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Audio: burst SFX (plays once at the burst) and looping background
+     flute (starts on first user interaction, per browser autoplay rules). -->
+<audio id="sfxBurst" src="assets/audio/matki-break.mp3" preload="auto"></audio>
+<audio id="bgMusic" src="assets/audio/flute.mp3" preload="auto" loop></audio>
+
+<script src="script.js"></script>
+</body>
+</html>
